@@ -1,0 +1,238 @@
+{
+	"info": {
+		"_postman_id": "2d5095e1-af45-4e30-bd14-52a57a698de0",
+		"name": "OWASP Juice Shop",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "13669584"
+	},
+	"item": [
+		{
+			"name": "Captcha",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"const jsonData = pm.response.json();\r",
+							"pm.collectionVariables.set(\"captchaId\", jsonData.captchaId)\r",
+							"pm.collectionVariables.set(\"captchaAnswer\", jsonData.answer);"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "http://localhost:3000/rest/captcha/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"rest",
+						"captcha",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Feedbacks_Static_Captcha",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData).to.have.property('data');\r",
+							"  pm.expect(responseData.data).to.have.property('id');\r",
+							"  pm.expect(responseData.data).to.have.property('comment');\r",
+							"  pm.expect(responseData.data).to.have.property('rating');\r",
+							"  pm.expect(responseData.data).to.have.property('UserId');\r",
+							"  pm.expect(responseData.data).to.have.property('updatedAt');\r",
+							"  pm.expect(responseData.data).to.have.property('createdAt');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Comment contains specific text\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.data.comment).to.include(\"some text\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"captchaId\": {{captchaId}},\r\n  \"captcha\": \"{{captchaAnswer}}\",\r\n  \"comment\": \"some text\",\r\n  \"rating\": 9\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/Feedbacks/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"Feedbacks",
+						""
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "Feedbacks_Dynamic_Captcha",
+			"event": [
+				{
+					"listen": "prerequest",
+					"script": {
+						"exec": [
+							"try {\r",
+							"    const response = await pm.sendRequest({\r",
+							"        url: \"http://localhost:3000/rest/captcha/\",\r",
+							"        method: \"GET\"\r",
+							"    });\r",
+							"\r",
+							"    const jsonData = response.json();\r",
+							"    pm.collectionVariables.set(\"captchaId\", jsonData.captchaId)\r",
+							"    pm.collectionVariables.set(\"captchaAnswer\", jsonData.answer);\r",
+							"\r",
+							"    console.log(response.json());\r",
+							"} catch (err) {\r",
+							"    console.error(err);\r",
+							"}"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				},
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"  pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has the required fields\", function () {\r",
+							"  const responseData = pm.response.json();\r",
+							"  \r",
+							"  pm.expect(responseData).to.be.an('object');\r",
+							"  pm.expect(responseData).to.have.property('data');\r",
+							"  pm.expect(responseData.data).to.have.property('id');\r",
+							"  pm.expect(responseData.data).to.have.property('comment');\r",
+							"  pm.expect(responseData.data).to.have.property('rating');\r",
+							"  pm.expect(responseData.data).to.have.property('UserId');\r",
+							"  pm.expect(responseData.data).to.have.property('updatedAt');\r",
+							"  pm.expect(responseData.data).to.have.property('createdAt');\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Comment contains specific text\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData.data.comment).to.include(\"some text\");\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"captchaId\": {{captchaId}},\r\n  \"captcha\": \"{{captchaAnswer}}\",\r\n  \"comment\": \"some text\",\r\n  \"rating\": 5  \r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "http://localhost:3000/api/Feedbacks/",
+					"protocol": "http",
+					"host": [
+						"localhost"
+					],
+					"port": "3000",
+					"path": [
+						"api",
+						"Feedbacks",
+						""
+					]
+				}
+			},
+			"response": []
+		}
+	],
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"packages": {},
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "captchaId",
+			"value": ""
+		},
+		{
+			"key": "captchaAnswer",
+			"value": ""
+		}
+	]
+}
