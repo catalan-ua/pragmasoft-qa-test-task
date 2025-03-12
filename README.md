@@ -7,4 +7,4 @@
 
 ### Bugs
 ***
-4 bugs are reported in the Issues section   
+4 bugs related to Customer Feedback are reported in the Issues section   
